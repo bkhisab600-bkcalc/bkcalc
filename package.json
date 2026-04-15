@@ -1,1 +1,29 @@
-
+{
+  "name": "bkcalc",
+  "displayName": "Bkcalc",
+  "version": "1.0.0",
+  "description": "Smart calculator app",
+  "main": "index.js",
+  "scripts": {
+    "build": "cordova build android",
+    "build:release": "cordova build android --release",
+    "build:aab": "cordova build android --release -- --packageType=bundle"
+  },
+  "keywords": [
+    "calculator",
+    "cordova",
+    "android"
+  ],
+  "author": "Bkcalc",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "cordova": "^12.0.0",
+    "cordova-android": "^13.0.0"
+  },
+  "cordova": {
+    "platforms": [
+      "android"
+    ]
+  }
+}
