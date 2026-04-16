@@ -14,7 +14,6 @@
       background:#f3f4f6;
       color:#111827;
     }
-
     :root{
       --safe-top: env(safe-area-inset-top, 0px);
       --nav-h: 64px;
@@ -396,7 +395,7 @@
       <div>
         <label>পেস্ট করুন</label>
         <textarea id="input" rows="8"
-          placeholder="WhatsApp থেকে নাম্বার সাথে এমাউন্ট সহ সব একসাথে কপি পেস্ট করুন। যেমন 019777222=10200 018633333+20400 ⇨  বিকাশ নাম্বার টু এমাউন্ট হিসাব।"
+          placeholder="WhatsApp থেকে নাম্বার সাথে এমাউন্ট সহ সব একসাথে কপি পেস্ট করুন। যেমন 019777222=10200 018633333+20400"
           class="big-paste ph-medium input-main"></textarea>
       </div>
 
@@ -564,7 +563,7 @@
   function autoFixDigits(str){
     return String(str || '')
       .replace(/[—–−]/g,'-')
-      .replace(/[lI|]/g,'1');
+      .replace(/\b[0-9][0-9lI|]*\b/g, tok => tok.replace(/[lI|]/g,'1'));
   }
 
   function normalizeBasic(str){
@@ -620,14 +619,9 @@
     s = s.replace(/৳/g, ' ');
     s = s.replace(/\/-/g, ' ');
 
-    // dot থাকলে mismatch
     if (/\d+\.\d+/.test(s)) return null;
 
-    // শুধু comma ignore
-    // 10,200 => 10200
     s = s.replace(/(\d),+(?=\d)/g, '$1');
-
-    // = আর : separator
     s = s.replace(/[=:]/g, ' ');
 
     const nums = s.match(/\d+/g) || [];
@@ -653,8 +647,6 @@
   function parsePhoneOccurrences(input){
     const src = String(input || '');
     const matches = [];
-
-    // space allowed না
     const re = /(?:\+880|00880|880|0|O)[_\-\/]*1[_\-\/]*[3-9](?:[_\-\/]*\d){8}\b/g;
 
     let m;
@@ -942,7 +934,7 @@
     html += `</div></div>`;
 
     html += `<div class="mt-3 force-black space-y-2">
-      <div class="font-bold text-sm"> মোট: ${formatNumber(parsedTotal)} ৳</div>
+      <div class="font-bold text-sm">মোট: ${formatNumber(parsedTotal)} ৳</div>
       <div class="font-bold text-sm">Extra Add: ${formatNumber(extraTotal)} ৳</div>
     </div>`;
 
