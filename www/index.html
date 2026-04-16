@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -141,6 +140,8 @@
       cursor:pointer;
       touch-action:manipulation;
       user-select:none;
+      -webkit-user-select:none;
+      -webkit-touch-callout:none;
     }
 
     .icon-btn:active{
@@ -172,6 +173,8 @@
         0 4px 10px rgba(0,0,0,.10);
       touch-action:manipulation;
       user-select:none;
+      -webkit-user-select:none;
+      -webkit-touch-callout:none;
     }
 
     .page-btn:active{
@@ -208,6 +211,9 @@
       font-weight:600;
       cursor:pointer;
       touch-action:manipulation;
+      -webkit-user-select:none;
+      user-select:none;
+      -webkit-touch-callout:none;
     }
 
     .menu-item:active{
@@ -251,6 +257,8 @@
       word-break:normal;
       overflow-wrap:normal;
       user-select:none;
+      -webkit-user-select:none;
+      -webkit-touch-callout:none;
       cursor:text;
       position:relative;
       scrollbar-width:none;
@@ -327,6 +335,8 @@
       background:var(--result-copy-bg);
       cursor:pointer;
       user-select:none;
+      -webkit-user-select:none;
+      -webkit-touch-callout:none;
       max-width:100%;
       touch-action:manipulation;
     }
@@ -344,12 +354,18 @@
       color:var(--text);
       overflow:hidden;
       text-overflow:ellipsis;
+      user-select:none;
+      -webkit-user-select:none;
+      -webkit-touch-callout:none;
     }
 
     .copy-icon{
       font-size:18px;
       color:var(--operator);
       flex-shrink:0;
+      user-select:none;
+      -webkit-user-select:none;
+      -webkit-touch-callout:none;
     }
 
     .action-bar{
@@ -385,6 +401,8 @@
       font-weight:800;
       line-height:1;
       user-select:none;
+      -webkit-user-select:none;
+      -webkit-touch-callout:none;
       cursor:pointer;
       touch-action:manipulation;
     }
@@ -419,6 +437,8 @@
       transition:background .01s linear, transform 0s, color .04s linear;
       touch-action:manipulation;
       user-select:none;
+      -webkit-user-select:none;
+      -webkit-touch-callout:none;
     }
 
     .btn:active{
@@ -457,6 +477,9 @@
       justify-content:center;
       font-size:clamp(14px, 3.6vw, 22px);
       overflow:hidden;
+      -webkit-user-select:none;
+      user-select:none;
+      -webkit-touch-callout:none;
     }
 
     .gear{
@@ -470,10 +493,35 @@
       align-items:center;
       justify-content:center;
       font-size:clamp(18px, 4vw, 22px);
+      -webkit-user-select:none;
+      user-select:none;
+      -webkit-touch-callout:none;
     }
 
     .toast{
-      display:none;
+      position:fixed;
+      left:50%;
+      bottom:calc(78px + var(--safe-bottom));
+      transform:translateX(-50%) translateY(10px);
+      background:rgba(17,24,39,.96);
+      color:#fff;
+      padding:10px 16px;
+      border-radius:12px;
+      font-size:14px;
+      font-weight:700;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .2s ease, transform .2s ease;
+      z-index:100;
+      box-shadow:0 8px 24px rgba(0,0,0,.22);
+      -webkit-user-select:none;
+      user-select:none;
+      -webkit-touch-callout:none;
+    }
+
+    .toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(0);
     }
 
     @media (max-height:700px){
@@ -577,10 +625,21 @@
     const menuDropdown = document.getElementById("menuDropdown");
     const themeToggleBtn = document.getElementById("themeToggleBtn");
     const backspaceBtn = document.getElementById("backspaceBtn");
+    const toast = document.getElementById("toast");
 
     let expression = "";
     let cursorIndex = 0;
     let lastValidResult = "0";
+    let toastTimer;
+
+    function showToast(message = "Copied to clipboard"){
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 1400);
+    }
 
     function escapeHtml(text){
       return text
@@ -878,6 +937,7 @@
 
       try{
         await navigator.clipboard.writeText(value);
+        showToast("Copied to clipboard");
       } catch {
         const temp = document.createElement("textarea");
         temp.value = value;
@@ -885,6 +945,7 @@
         temp.select();
         document.execCommand("copy");
         document.body.removeChild(temp);
+        showToast("Copied to clipboard");
       }
     }
 
@@ -966,6 +1027,10 @@
       copyResult();
     });
 
+    copyResultBtn.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
+
     menuBtn.addEventListener("pointerdown", (e) => {
       e.preventDefault();
       toggleMenu();
@@ -984,6 +1049,16 @@
     document.addEventListener("pointerdown", (e) => {
       if (!menuDropdown.contains(e.target) && !menuBtn.contains(e.target)) {
         closeMenu();
+      }
+    });
+
+    document.addEventListener("contextmenu", (e) => {
+      if (
+        exprView.contains(e.target) ||
+        result.contains(e.target) ||
+        copyResultBtn.contains(e.target)
+      ) {
+        e.preventDefault();
       }
     });
 
