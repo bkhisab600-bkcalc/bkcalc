@@ -37,5 +37,5 @@
     <preference name="SplashScreenDelay" value="0" />
     <preference name="AutoHideSplashScreen" value="true" />
     <preference name="FadeSplashScreen" value="false" />
-
+    <icon src="www/m-logo.png" />
 </widget>
