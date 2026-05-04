@@ -244,7 +244,7 @@ function fitExpressionText() {
   // ৩য় লাইন (19+ char)   → 24px
 
   if (len <= 9) {
-    exprView.style.fontSize = "40px";
+    exprView.style.fontSize = "48px";
   } else if (len <= 18) {
     exprView.style.fontSize = "34px";
   } else {
@@ -273,7 +273,7 @@ function renderExpression(mode = "preserve") {
 function renderAfterEdit() {
   syncExpression();
   updateResult();
-  renderExpression("bottom");
+  renderExpression("preserve"); // backspace/delete → scroll ধরে রাখো
 }
 
 function renderAfterTap() {
@@ -289,13 +289,13 @@ function fitResultText() {
   const text = result.textContent || "";
 
   if (text === "0" || text === "") {
-    result.style.fontSize = "30px";
+    result.style.fontSize = "35px";
     return;
   }
 
   // ধাপে ধাপে font size কমাতে থাকো যতক্ষণ না text box এ ফেটে যায়
-  const maxSize = 30;
-  const minSize = 11;
+  const maxSize = 35;
+  const minSize = 8;
   const step = 1;
 
   result.style.fontSize = maxSize + "px";
@@ -321,7 +321,9 @@ function setResultText(value) {
 function insertAtCursor(text) {
   expression = expression.slice(0, cursorIndex) + text + expression.slice(cursorIndex);
   cursorIndex += text.length;
-  renderAfterEdit();
+  syncExpression();
+  updateResult();
+  renderExpression("bottom"); // নতুন character → নিচে scroll
 }
 
 function insertOperator(op) {
@@ -410,7 +412,7 @@ function backspaceAtCursor() {
     "sin(", "cos(", "tan(",
     "pow10(", "cube(", "log(",
     "abs(", "exp(", "ln(", "sq(",
-    "√(", "∛(", "00"
+    "√(", "∛(", "0"
   ];
 
   const left = expression.slice(0, cursorIndex);
