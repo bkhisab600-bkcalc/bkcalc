@@ -244,7 +244,7 @@ function fitExpressionText() {
   // ৩য় লাইন (19+ char)   → 24px
 
   if (len <= 9) {
-    exprView.style.fontSize = "48px";
+    exprView.style.fontSize = "39px";
   } else if (len <= 18) {
     exprView.style.fontSize = "34px";
   } else {
